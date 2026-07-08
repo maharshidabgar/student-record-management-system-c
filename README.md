@@ -67,4 +67,8 @@ Functions
 Conditional statements
 Loops
 Searching and updating records
+<<<<<<< HEAD
 Temporary file handling for delete/update operations
+=======
+Temporary file handling for delete/update operations
+>>>>>>> 24282421c154e1e4d2cd7438d9135d9ef9d77c13
