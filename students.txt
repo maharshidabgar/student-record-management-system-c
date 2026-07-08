@@ -1,0 +1,2 @@
+101|Maharshi Dabgar|21|Bsc IT|88.50
+102|Rahul Modi|20|Computer Science|76.00
