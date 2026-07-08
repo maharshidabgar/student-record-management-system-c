@@ -16,6 +16,9 @@ void searchStudent();
 void updateStudent();
 void deleteStudent();
 int rollExists(int roll);
+void countStudents();
+void showTopper();
+char getGrade(float marks);
 
 int main() {
     int choice;
@@ -27,7 +30,9 @@ int main() {
         printf("3. Search Student\n");
         printf("4. Update Student\n");
         printf("5. Delete Student\n");
-        printf("6. Exit\n");
+        printf("6. Count Total Students\n");
+        printf("7. Show Topper Student\n");
+        printf("8. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
 
@@ -48,6 +53,12 @@ int main() {
                 deleteStudent();
                 break;
             case 6:
+                countStudents();
+                break;
+            case 7:
+                showTopper();
+                break;
+            case 8:
                 printf("Exiting program...\n");
                 exit(0);
             default:
@@ -77,6 +88,19 @@ int rollExists(int roll) {
 
     fclose(fp);
     return 0;
+}
+
+char getGrade(float marks) {
+    if (marks >= 90)
+        return 'A';
+    else if (marks >= 75)
+        return 'B';
+    else if (marks >= 60)
+        return 'C';
+    else if (marks >= 40)
+        return 'D';
+    else
+        return 'F';
 }
 
 void addStudent() {
@@ -128,13 +152,13 @@ void viewStudents() {
     }
 
     printf("\n===================== STUDENT RECORDS =====================\n");
-    printf("%-10s %-20s %-8s %-20s %-8s\n", "Roll", "Name", "Age", "Course", "Marks");
-    printf("------------------------------------------------------------\n");
+    printf("%-10s %-20s %-8s %-20s %-8s %-8s\n", "Roll", "Name", "Age", "Course", "Marks", "Grade");
+    printf("----------------------------------------------------------------------\n");
 
     while (fscanf(fp, "%d|%49[^|]|%d|%49[^|]|%f\n",
                   &s.roll, s.name, &s.age, s.course, &s.marks) == 5) {
-        printf("%-10d %-20s %-8d %-20s %-8.2f\n",
-               s.roll, s.name, s.age, s.course, s.marks);
+        printf("%-10d %-20s %-8d %-20s %-8.2f %-8c\n",
+               s.roll, s.name, s.age, s.course, s.marks, getGrade(s.marks));
         found = 1;
     }
 
@@ -168,6 +192,7 @@ void searchStudent() {
             printf("Age         : %d\n", s.age);
             printf("Course      : %s\n", s.course);
             printf("Marks       : %.2f\n", s.marks);
+            printf("Grade       : %c\n", getGrade(s.marks));
             found = 1;
             break;
         }
@@ -265,4 +290,59 @@ void deleteStudent() {
         printf("Student record deleted successfully!\n");
     else
         printf("Student with roll number %d not found.\n", roll);
+}
+
+void countStudents() {
+    FILE *fp;
+    struct Student s;
+    int count = 0;
+
+    fp = fopen("students.txt", "r");
+    if (fp == NULL) {
+        printf("No records found!\n");
+        return;
+    }
+
+    while (fscanf(fp, "%d|%49[^|]|%d|%49[^|]|%f\n",
+                  &s.roll, s.name, &s.age, s.course, &s.marks) == 5) {
+        count++;
+    }
+
+    fclose(fp);
+
+    printf("\nTotal number of students: %d\n", count);
+}
+
+void showTopper() {
+    FILE *fp;
+    struct Student s, topper;
+    int found = 0;
+
+    fp = fopen("students.txt", "r");
+    if (fp == NULL) {
+        printf("No records found!\n");
+        return;
+    }
+
+    while (fscanf(fp, "%d|%49[^|]|%d|%49[^|]|%f\n",
+                  &s.roll, s.name, &s.age, s.course, &s.marks) == 5) {
+        if (!found || s.marks > topper.marks) {
+            topper = s;
+            found = 1;
+        }
+    }
+
+    fclose(fp);
+
+    if (found) {
+        printf("\n========== TOPPER STUDENT ==========\n");
+        printf("Roll Number : %d\n", topper.roll);
+        printf("Name        : %s\n", topper.name);
+        printf("Age         : %d\n", topper.age);
+        printf("Course      : %s\n", topper.course);
+        printf("Marks       : %.2f\n", topper.marks);
+        printf("Grade       : %c\n", getGrade(topper.marks));
+    } else {
+        printf("No student records available.\n");
+    }
 }
